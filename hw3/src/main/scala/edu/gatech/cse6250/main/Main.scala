@@ -15,11 +15,6 @@ import org.apache.spark.sql.SparkSession
 
 import scala.io.Source
 
-/**
- * @author Hang Su <hangsu@gatech.edu>,
- * @author Yu Jing <yjing43@gatech.edu>,
- * @author Ming Liu <mliu302@gatech.edu>
- */
 object Main {
   def main(args: Array[String]) {
     import org.apache.log4j.{ Level, Logger }
@@ -44,12 +39,6 @@ object Main {
       FeatureConstruction.constructLabFeatureTuple(labResult),
       FeatureConstruction.constructMedicationFeatureTuple(medication)
     )
-
-    // =========== USED FOR AUTO GRADING CLUSTERING GRADING =============
-    // phenotypeLabel.map{ case(a,b) => s"$a\t$b" }.saveAsTextFile("data/phenotypeLabel")
-    // featureTuples.map{ case((a,b),c) => s"$a\t$b\t$c" }.saveAsTextFile("data/featureTuples")
-    // return
-    // ==================================================================
 
     val rawFeatures = FeatureConstruction.construct(sc, featureTuples)
 
@@ -98,122 +87,42 @@ object Main {
     }
 
     /**
-     * TODO: K Means Clustering using spark mllib
+     * K Means Clustering using spark mllib
      * Train a k means model using the variabe featureVectors as input
-     * Set maxIterations =20 and seed as 6250L
      * Assign each feature vector to a cluster(predicted Class)
      * Obtain an RDD[(Int, Int)] of the form (cluster number, RealClass)
      * Find Purity using that RDD as an input to Metrics.purity
-     * Remove the placeholder below after your implementation
      */
     featureVectors.cache()
     val k_means = new KMeans().setSeed(6205L).setK(3).setMaxIterations(20).run(featureVectors).predict(featureVectors)
     val k_means_pred = features.map(_._1).zip(k_means).join(phenotypeLabel).map(_._2)
     val kMeansPurity = Metrics.purity(k_means_pred)
-    /*
-    //calculate cluster percentages:
-    val c1case = k_means_pred.filter(x => (x._1 == 0 && x._2 == 1)).count()
-    val c1control = k_means_pred.filter(x => (x._1 == 0 && x._2 == 2)).count()
-    val c1other = k_means_pred.filter(x => (x._1 == 0 && x._2 == 3)).count()
-    val c2case = k_means_pred.filter(x => (x._1 == 1 && x._2 == 1)).count()
-    val c2control = k_means_pred.filter(x => (x._1 == 1 && x._2 == 2)).count()
-    val c2other = k_means_pred.filter(x => (x._1 == 1 && x._2 == 3)).count()
-    val c3case = k_means_pred.filter(x => (x._1 == 2 && x._2 == 1)).count()
-    val c3control = k_means_pred.filter(x => (x._1 == 2 && x._2 == 2)).count()
-    val c3other = k_means_pred.filter(x => (x._1 == 2 && x._2 == 3)).count()
-    println("K means")
-    println("cluster 1:")
-    println("case: " + c1case)
-    println("control: " + c1control)
-    println("other: " + c1other)
-    println("cluster 2:")
-    println("case: " + c2case)
-    println("control: " + c2control)
-    println("other: " + c2other)
-    println("cluster 3:")
-    println("case: " + c3case)
-    println("control: " + c3control)
-    println("other: " + c3other)
-    */
+    
     /**
-     * TODO: GMMM Clustering using spark mllib
+     * GMMM Clustering using spark mllib
      * Train a Gaussian Mixture model using the variabe featureVectors as input
-     * Set maxIterations =20 and seed as 6250L
      * Assign each feature vector to a cluster(predicted Class)
      * Obtain an RDD[(Int, Int)] of the form (cluster number, RealClass)
      * Find Purity using that RDD as an input to Metrics.purity
-     * Remove the placeholder below after your implementation
      */
 
     val gmm = new GaussianMixture().setSeed(6205L).setK(3).setMaxIterations(20).run(featureVectors).predict(featureVectors)
     val gmm_pred = features.map(_._1).zip(gmm).join(phenotypeLabel).map(_._2)
     val gaussianMixturePurity = Metrics.purity(gmm_pred)
     /*
-    //calculate cluster percentages:
-    val g1case = gmm_pred.filter(x => (x._1 == 0 && x._2 == 1)).count()
-    val g1control = gmm_pred.filter(x => (x._1 == 0 && x._2 == 2)).count()
-    val g1other = gmm_pred.filter(x => (x._1 == 0 && x._2 == 3)).count()
-    val g2case = gmm_pred.filter(x => (x._1 == 1 && x._2 == 1)).count()
-    val g2control = gmm_pred.filter(x => (x._1 == 1 && x._2 == 2)).count()
-    val g2other = gmm_pred.filter(x => (x._1 == 1 && x._2 == 3)).count()
-    val g3case = gmm_pred.filter(x => (x._1 == 2 && x._2 == 1)).count()
-    val g3control = gmm_pred.filter(x => (x._1 == 2 && x._2 == 2)).count()
-    val g3other = gmm_pred.filter(x => (x._1 == 2 && x._2 == 3)).count()
-    println("GMM")
-    println("cluster 1:")
-    println("case: " + g1case)
-    println("control: " + g1control)
-    println("other: " + g1other)
-    println("cluster 2:")
-    println("case: " + g2case)
-    println("control: " + g2control)
-    println("other: " + g2other)
-    println("cluster 3:")
-    println("case: " + g3case)
-    println("control: " + g3control)
-    println("other: " + g3other)
-    */
+    
     /**
-     * TODO: StreamingKMeans Clustering using spark mllib
+     * StreamingKMeans Clustering using spark mllib
      * Train a StreamingKMeans model using the variabe featureVectors as input
-     * Set the number of cluster K = 3, DecayFactor = 1.0, number of dimensions = 10, weight for each center = 0.5, seed as 6250L
-     * In order to feed RDD[Vector] please use latestModel, see more info: https://spark.apache.org/docs/2.2.0/api/scala/index.html#org.apache.spark.mllib.clustering.StreamingKMeans
-     * To run your model, set time unit as 'points'
      * Assign each feature vector to a cluster(predicted Class)
      * Obtain an RDD[(Int, Int)] of the form (cluster number, RealClass)
      * Find Purity using that RDD as an input to Metrics.purity
-     * Remove the placeholder below after your implementation
      */
 
     val sKmeans = new StreamingKMeans().setK(3).setDecayFactor(1.0).setRandomCenters(10, 0.5, 6250L).latestModel()
     val sKmeans_pred = sKmeans.update(featureVectors, 1.0, "batches").predict(featureVectors)
     val sKmeans_test = features.map(_._1).zip(sKmeans_pred).join(phenotypeLabel).map(_._2)
 
-    /*
-    //calculate cluster percentages:
-    val s1case = sKmeans_test.filter(x => (x._1 == 0 && x._2 == 1)).count()
-    val s1control = sKmeans_test.filter(x => (x._1 == 0 && x._2 == 2)).count()
-    val s1other = sKmeans_test.filter(x => (x._1 == 0 && x._2 == 3)).count()
-    val s2case = sKmeans_test.filter(x => (x._1 == 1 && x._2 == 1)).count()
-    val s2control = sKmeans_test.filter(x => (x._1 == 1 && x._2 == 2)).count()
-    val s2other = sKmeans_test.filter(x => (x._1 == 1 && x._2 == 3)).count()
-    val s3case = sKmeans_test.filter(x => (x._1 == 2 && x._2 == 1)).count()
-    val s3control = sKmeans_test.filter(x => (x._1 == 2 && x._2 == 2)).count()
-    val s3other = sKmeans_test.filter(x => (x._1 == 2 && x._2 == 3)).count()
-    println("Streaming K-Means")
-    println("cluster 1:")
-    println("case: " + s1case)
-    println("control: " + s1control)
-    println("other: " + s1other)
-    println("cluster 2:")
-    println("case: " + s2case)
-    println("control: " + s2control)
-    println("other: " + s2other)
-    println("cluster 3:")
-    println("case: " + s3case)
-    println("control: " + s3control)
-    println("other: " + s3other)
-    */
     val streamKmeansPurity = Metrics.purity(sKmeans_test)
 
     //val streamKmeansPurity = 0.0
@@ -244,13 +153,8 @@ object Main {
     import spark.implicits._
     val sqlContext = spark.sqlContext
 
-    /* a helper function sqlDateParser may useful here */
     val dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
 
-    /**
-     * TODO: implement your own code here and remove
-     * existing placeholder code below
-     */
     // medication data
     val medicationOrders = CSVHelper.loadCSVAsTable(spark, "file:///hw3/code/data/medication_orders_INPUT.csv", "MedicationTable")
     val medicationDF = spark.sql("SELECT Member_ID AS patientID, Order_Date AS date, Drug_Name AS medicine FROM MedicationTable")
