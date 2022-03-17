@@ -4,10 +4,8 @@ from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import torch.nn.functional as F
 import numpy as np
 
-##### DO NOT MODIFY OR REMOVE THIS VALUE #####
-checksum = '169a9820bbc999009327026c9d76bcf1'
-##### DO NOT MODIFY OR REMOVE THIS VALUE #####
 
+checksum = '169a9820bbc999009327026c9d76bcf1'
 
 class MyMLP(nn.Module):
     def __init__(self):
