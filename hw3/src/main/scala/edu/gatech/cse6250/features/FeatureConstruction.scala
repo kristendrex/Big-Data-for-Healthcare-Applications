@@ -5,9 +5,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.mllib.linalg.{ Vector, Vectors }
 import org.apache.spark.rdd.RDD
 
-/**
- * @author Hang Su
- */
+
 object FeatureConstruction {
 
   /**
@@ -22,10 +20,6 @@ object FeatureConstruction {
    * @return RDD of feature tuples
    */
   def constructDiagnosticFeatureTuple(diagnostic: RDD[Diagnostic]): RDD[FeatureTuple] = {
-    /**
-     * TODO implement your own code here and remove existing
-     * placeholder code
-     */
     val diag_feature = diagnostic.map(x => ((x.patientID, x.code), 1.0)).reduceByKey(_ + _)
     diag_feature
 
@@ -33,15 +27,10 @@ object FeatureConstruction {
 
   /**
    * Aggregate feature tuples from medication with COUNT aggregation,
-   *
    * @param medication RDD of medication
    * @return RDD of feature tuples
    */
   def constructMedicationFeatureTuple(medication: RDD[Medication]): RDD[FeatureTuple] = {
-    /**
-     * TODO implement your own code here and remove existing
-     * placeholder code
-     */
     val med_feature = medication.map(x => ((x.patientID, x.medicine), 1.0)).reduceByKey(_ + _)
     med_feature
   }
@@ -53,10 +42,6 @@ object FeatureConstruction {
    * @return RDD of feature tuples
    */
   def constructLabFeatureTuple(labResult: RDD[LabResult]): RDD[FeatureTuple] = {
-    /**
-     * TODO implement your own code here and remove existing
-     * placeholder code
-     */
     val lab_sum = labResult.map(x => ((x.patientID, x.testName), x.value)).reduceByKey(_ + _)
     val lab_count = labResult.map(x => ((x.patientID, x.testName), 1.0)).reduceByKey(_ + _)
     val lab_feature = lab_sum.join(lab_count).map(x => (x._1, x._2._1 / x._2._2))
@@ -72,10 +57,6 @@ object FeatureConstruction {
    * @return RDD of feature tuples
    */
   def constructDiagnosticFeatureTuple(diagnostic: RDD[Diagnostic], candiateCode: Set[String]): RDD[FeatureTuple] = {
-    /**
-     * TODO implement your own code here and remove existing
-     * placeholder code
-     */
     val diag_features = diagnostic.filter(x => candiateCode.contains(x.code)).map(x => ((x.patientID, x.code), 1.0)).reduceByKey(_ + _)
     diag_features
   }
@@ -89,10 +70,6 @@ object FeatureConstruction {
    * @return RDD of feature tuples
    */
   def constructMedicationFeatureTuple(medication: RDD[Medication], candidateMedication: Set[String]): RDD[FeatureTuple] = {
-    /**
-     * TODO implement your own code here and remove existing
-     * placeholder code
-     */
     val med_features = medication.filter(x => candidateMedication.contains(x.medicine)).map(x => ((x.patientID, x.medicine), 1.0)).reduceByKey(_ + _)
     med_features
 
@@ -107,10 +84,6 @@ object FeatureConstruction {
    * @return RDD of feature tuples
    */
   def constructLabFeatureTuple(labResult: RDD[LabResult], candidateLab: Set[String]): RDD[FeatureTuple] = {
-    /**
-     * TODO implement your own code here and remove existing
-     * placeholder code
-     */
     val lab_sum = labResult.map(x => ((x.patientID, x.testName), x.value)).reduceByKey(_ + _)
     val lab_count = labResult.map(x => ((x.patientID, x.testName), 1.0)).reduceByKey(_ + _)
     val lab_feature = lab_sum.join(lab_count).map(x => (x._1, x._2._1 / x._2._2))
@@ -139,16 +112,6 @@ object FeatureConstruction {
 
     /** transform input feature */
 
-    /**
-     * Functions maybe helpful:
-     * collect
-     * groupByKey
-     */
-
-    /**
-     * TODO implement your own code here and remove existing
-     * placeholder code
-     */
     val patientAndFeatures = feature.map(x => (x._1._1, (x._1._2, x._2))).groupByKey()
 
     val result = patientAndFeatures.map {
