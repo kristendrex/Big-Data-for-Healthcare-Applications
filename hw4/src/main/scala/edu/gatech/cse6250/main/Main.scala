@@ -1,8 +1,3 @@
-/**
- * @author Hang Su <hangsu@gatech.edu>.
- * @author Yu Jing <yujing@gatech.edu>
- */
-
 package edu.gatech.cse6250.main
 
 import java.text.SimpleDateFormat
