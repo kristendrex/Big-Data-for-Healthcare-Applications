@@ -6,21 +6,14 @@ from torch.utils.data import TensorDataset, Dataset
 from scipy.sparse import csr_matrix
 import pickle
 
-##### DO NOT MODIFY OR REMOVE THIS VALUE #####
+
 checksum = '169a9820bbc999009327026c9d76bcf1'
-##### DO NOT MODIFY OR REMOVE THIS VALUE #####
 
 def load_seizure_dataset(path, model_type):
     """
     :param path: a path to the seizure data CSV file
     :return dataset: a TensorDataset consists of a data Tensor and a target Tensor
     """
-    # TODO: Read a csv file from path.
-    # TODO: Please refer to the header of the file to locate X and y.
-    # TODO: y in the raw data is ranging from 1 to 5. Change it to be from 0 to 4.
-    # TODO: Remove the header of CSV file of course.
-    # TODO: Do Not change the order of rows.
-    # TODO: You can use Pandas if you want to.
     df = pd.read_csv(path)
     y = (df['y']-1).values
     X = df.loc[:, 'X1':'X178'].values
@@ -40,7 +33,7 @@ def calculate_num_features(seqs):
     :param seqs:
     :return: the calculated number of features
     """
-    # TODO: Calculate the number of features (diagnoses codes in the train set)
+    # Calculate the number of features (diagnoses codes in the train set)
     maxVal = 0
     for seq in seqs:
         for s in seq:
@@ -70,9 +63,8 @@ class VisitSequenceWithLabelDataset(Dataset):
 
         self.labels = labels
         
-        # TODO: Complete this constructor to make self.seqs as a List of which each element represent visits of a patient
-        # TODO: by Numpy matrix where i-th row represents i-th visit and j-th column represent the feature ID j.
-        # TODO: You can use Sparse matrix type for memory efficiency if you want.
+        # Complete this constructor to make self.seqs as a List of which each element represent visits of a patient
+        # by Numpy matrix where i-th row represents i-th visit and j-th column represent the feature ID j.
         def constructMatrix(aSeq, num_features):
             numVisits = len(aSeq)
             matrix = []
