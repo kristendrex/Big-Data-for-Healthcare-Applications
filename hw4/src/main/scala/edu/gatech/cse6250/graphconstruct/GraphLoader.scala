@@ -1,7 +1,3 @@
-/**
- * @author Hang Su <hangsu@gatech.edu>.
- */
-
 package edu.gatech.cse6250.graphconstruct
 
 import edu.gatech.cse6250.model._
@@ -48,12 +44,7 @@ object GraphLoader {
     val diagMapBC = sc.broadcast(vertexDiagnosticRDD.collect.toMap)
 
     val vertices = vertexPatient.union(vertexLabResult).union(vertexMedication).union(vertexDiagnostic)
-    /**
-     * HINT: See Example of Making PatientPatient Edges Below
-     *
-     * This is just sample edges to give you an example.
-     * You can remove this PatientPatient edges and make edges you really need
-     */
+
     edgeDiagnostic = diagnostics.map(x => ((x.patientID, x.icd9code), x)).groupByKey()
       .map(x => ((x._1._1, x._1._2), x._2.last))
       .flatMap(y => List(
