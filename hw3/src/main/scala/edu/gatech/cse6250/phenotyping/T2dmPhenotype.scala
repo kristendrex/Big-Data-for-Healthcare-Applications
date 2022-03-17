@@ -3,10 +3,6 @@ package edu.gatech.cse6250.phenotyping
 import edu.gatech.cse6250.model.{ Diagnostic, LabResult, Medication }
 import org.apache.spark.rdd.RDD
 
-/**
- * @author Hang Su <hangsu@gatech.edu>,
- * @author Sungtae An <stan84@gatech.edu>,
- */
 object T2dmPhenotype {
 
   /** Hard code the criteria */
@@ -33,15 +29,6 @@ object T2dmPhenotype {
    * @return tuple in the format of (patient-ID, label). label = 1 if the patient is case, label = 2 if control, 3 otherwise
    */
   def transform(medication: RDD[Medication], labResult: RDD[LabResult], diagnostic: RDD[Diagnostic]): RDD[(String, Int)] = {
-    /**
-     * Remove the place holder and implement your code here.
-     * Hard code the medication, lab, icd code etc. for phenotypes like example code below.
-     * When testing your code, we expect your function to have no side effect,
-     * i.e. do NOT read from file or write file
-     *
-     * //You don't need to follow the example placeholder code below exactly, but do have the same return type.
-     * Hint: Consider case sensitivity when doing string comparisons.
-     */
 
     val sc = medication.sparkContext
 
@@ -120,16 +107,6 @@ object T2dmPhenotype {
    *         Attention: order of the three stats in the returned tuple matters!
    */
   def stat_calc(labResult: RDD[LabResult], phenotypeLabel: RDD[(String, Int)]): (Double, Double, Double) = {
-    /**
-     * you need to hardcode the feature name and the type of stat:
-     * e.g. calculate "mean" of "Glucose" lab test result of each group: case, control, unknown
-     *
-     * The feature name should be "Glucose" exactly with considering case sensitivity.
-     * i.e. "Glucose" and "glucose" are counted, but features like "fasting glucose" should not be counted.
-     *
-     * Hint: rdd dataset can directly call statistic method. Details can be found on course website.
-     *
-     */
     val case1 = phenotypeLabel.filter(x => x._2 == 1).map(x => x._1).collect.toSet
     val case_mean = labResult.filter(x => x.testName.toLowerCase.contains("glucose")).filter(x => case1(x.patientID)).map(x => x.value).mean()
     val case2 = phenotypeLabel.filter(x => x._2 == 2).map(x => x._1).collect.toSet
@@ -137,9 +114,6 @@ object T2dmPhenotype {
     val case3 = phenotypeLabel.filter(x => x._2 == 3).map(x => x._1).collect.toSet
     val other_mean = labResult.filter(x => x.testName.toLowerCase.contains("glucose")).filter(x => case3(x.patientID)).map(x => x.value).mean()
 
-    //val case_mean = 1.0
-    //val control_mean = 1.0
-    //val other_mean = 1.0
     (case_mean, control_mean, other_mean)
   }
 }
