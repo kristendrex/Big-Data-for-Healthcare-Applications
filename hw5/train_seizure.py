@@ -9,8 +9,6 @@ from utils import train, evaluate
 from plots import plot_learning_curves, plot_confusion_matrix
 from mymodels import MyMLP, MyCNN, MyRNN
 
-#TODO: https://pytorch.org/docs/stable/notes/windows.html#multiprocessing-error-without-if-clause-protection
-
 # Set a correct path to the seizure data file you downloaded
 PATH_TRAIN_FILE = "../data/seizure/seizure_train.csv"
 PATH_VALID_FILE = "../data/seizure/seizure_validation.csv"
