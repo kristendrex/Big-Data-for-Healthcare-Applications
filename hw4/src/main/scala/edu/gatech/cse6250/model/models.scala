@@ -1,7 +1,3 @@
-/**
- * @author Hang Su <hangsu@gatech.edu>.
- */
-
 package edu.gatech.cse6250.model
 
 case class LabResult(patientID: String, date: Long, labName: String, value: String)
