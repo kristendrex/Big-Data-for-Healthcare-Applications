@@ -2,10 +2,6 @@ package edu.gatech.cse6250.helper
 
 import org.apache.spark.sql.{ DataFrame, SparkSession }
 
-/**
- * @author Hang Su <hangsu@gatech.edu>,
- * @author Yu Jing <yjing43@gatech.edu>,
- */
 object CSVHelper {
   def loadCSVAsTable(spark: SparkSession, path: String, tableName: String): DataFrame = {
     val data = spark.read.format("com.databricks.spark.csv").
