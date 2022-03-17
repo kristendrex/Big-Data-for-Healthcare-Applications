@@ -1,7 +1,3 @@
-/**
- * @author Hang Su <hangsu@gatech.edu>.
- */
-
 package edu.gatech.cse6250
 
 import breeze.linalg.{ CSCMatrix => BSM, DenseMatrix => BDM, DenseVector => BDV, Matrix => BM, SparseVector => BSV, Vector => BV }
