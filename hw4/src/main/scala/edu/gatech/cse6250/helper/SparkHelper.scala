@@ -5,9 +5,6 @@ import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.{ SQLContext, SparkSession }
 import org.apache.spark.{ SparkConf, SparkContext }
 
-/**
- * @author Yu Jing <yujing@gatech.edu>,
- */
 object SparkHelper {
   lazy val sparkMasterURL = "local[*]"
 
