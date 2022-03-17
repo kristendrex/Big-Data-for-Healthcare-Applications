@@ -3,9 +3,6 @@ import itertools
 import numpy as np
 from sklearn.metrics import confusion_matrix
 
-# TODO: You can use other packages if you want, e.g., Numpy, Scikit-learn, etc.
-
-
 def plot_learning_curves(train_losses, valid_losses, train_accuracies, valid_accuracies):
     fig, axes = plt.subplots(1, 2)
     axes[0].plot(train_losses, label='training loss')
